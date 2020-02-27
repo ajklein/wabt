@@ -1,0 +1,2 @@
+;;; TOOL: wat2wasm
+(type (struct (mut f32) (field (mut f64))))

@@ -1,0 +1,4 @@
+;;; TOOL: wat2wasm
+(type
+  (struct (field $a f32)
+          (field $b (mut f64))))
