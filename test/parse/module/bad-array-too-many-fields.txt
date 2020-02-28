@@ -1,0 +1,8 @@
+;;; TOOL: wat2wasm
+;;; ERROR: 1
+(type (array i32 i32))
+(;; STDERR ;;;
+out/test/parse/module/bad-array-too-many-fields.txt:3:18: error: unexpected token i32, expected ).
+(type (array i32 i32))
+                 ^^^
+;;; STDERR ;;)
