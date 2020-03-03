@@ -57,8 +57,12 @@ class Type {
   };
 
   Type() = default;  // Provided so Type can be member of a union.
-  Type(int32_t code) : enum_(static_cast<Enum>(code)) {}
-  Type(Enum e) : enum_(e) {}
+  Type(int32_t code) : enum_(static_cast<Enum>(code)) {
+    assert(enum_ != RefT);  // Use MakeRefT below instead!
+  }
+  Type(Enum e) : enum_(e) {
+    assert(e != RefT);  // Use MakeRefT below instead!
+  }
   operator Enum() const { return IsRefT() ? RefT : enum_; }
 
   bool IsRef() const {
@@ -73,19 +77,22 @@ class Type {
   }
 
   const char* GetName() const {
-    switch (enum_) {
+    switch (operator Enum()) {
       case Type::I32:     return "i32";
       case Type::I64:     return "i64";
       case Type::F32:     return "f32";
       case Type::F64:     return "f64";
       case Type::V128:    return "v128";
       case Type::Funcref: return "funcref";
-      case Type::Func:    return "func";
-      case Type::Exnref:  return "exnref";
-      case Type::Void:    return "void";
-      case Type::Any:     return "any";
       case Type::Anyref:  return "anyref";
       case Type::Nullref: return "nullref";
+      case Type::RefT:    return "ref T";
+      case Type::Exnref:  return "exnref";
+      case Type::Func:    return "func";
+      case Type::Struct:  return "struct";
+      case Type::Array:   return "array";
+      case Type::Void:    return "void";
+      case Type::Any:     return "any";
       default:            return "<type_index>";
     }
   }
@@ -111,7 +118,7 @@ class Type {
 
   TypeVector GetInlineVector() const {
     assert(!IsIndex());
-    switch (enum_) {
+    switch (operator Enum()) {
       case Type::Void:
         return TypeVector();
 
@@ -123,6 +130,7 @@ class Type {
       case Type::Funcref:
       case Type::Anyref:
       case Type::Nullref:
+      case Type::RefT:
       case Type::Exnref:
         return TypeVector(this, this + 1);
 
