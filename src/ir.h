@@ -210,7 +210,7 @@ class StructType : public TypeEntry {
   }
 
   explicit StructType(string_view name = string_view())
-      : TypeEntry(TypeEntryKind::Struct) {}
+      : TypeEntry(TypeEntryKind::Struct, name) {}
 
   std::vector<Field> fields;
 };
@@ -222,7 +222,7 @@ class ArrayType : public TypeEntry {
   }
 
   explicit ArrayType(string_view name = string_view())
-      : TypeEntry(TypeEntryKind::Array) {}
+      : TypeEntry(TypeEntryKind::Array, name) {}
 
   Field field;
 };
@@ -581,6 +581,7 @@ class LocalTypes {
   void Set(const TypeVarVector&);
 
   const Decls& decls() const { return decls_; }
+  Decls& decls() { return decls_; }
 
   void AppendDecl(TypeVar type, Index count) {
     if (count != 0) {
