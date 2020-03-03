@@ -1,5 +1,6 @@
 ;;; TOOL: run-objdump
-;;; ARGS: -x
+;;; ARGS0: --enable-gc
+;;; ARGS1: -x
 (type (struct))
 (type (struct i32 i64 f32 f64))
 (type (struct i32 (mut i64)))
