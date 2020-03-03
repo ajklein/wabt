@@ -1610,6 +1610,14 @@ Result BinaryReader::ReadFunctionBody(Offset end_offset) {
         break;
       }
 
+      case Opcode::StructNew: {
+        Index type;
+        CHECK_RESULT(ReadIndex(&type, "type index"));
+        CALLBACK(OnStructNew, type);
+        CALLBACK(OnOpcodeUint32, type);
+        break;
+      }
+
       default:
         return ReportUnexpectedOpcode(opcode);
     }
