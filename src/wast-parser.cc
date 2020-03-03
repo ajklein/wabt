@@ -1206,6 +1206,9 @@ Result WastParser::ParseTypeModuleField(Module* module) {
     CHECK_RESULT(ParseFieldList(&struct_type->fields));
     field->type = std::move(struct_type);
   } else if (Match(TokenType::Array)) {
+    if (!options_->features.gc_enabled()) {
+      Error(loc, "array type not allowed");
+    }
     auto array_type = MakeUnique<ArrayType>(name);
     CHECK_RESULT(ParseField(&array_type->field));
     field->type = std::move(array_type);

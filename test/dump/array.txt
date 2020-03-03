@@ -1,5 +1,6 @@
 ;;; TOOL: run-objdump
-;;; ARGS: -x
+;;; ARGS0: --enable-gc
+;;; ARGS1: -x
 (type (array i32))
 (type (array (mut i64)))
 (;; STDOUT ;;;

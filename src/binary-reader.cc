@@ -2027,6 +2027,9 @@ Result BinaryReader::ReadTypeSection(Offset section_size) {
       }
 
       case Type::Array: {
+        ERROR_UNLESS(options_.features.gc_enabled(),
+                     "invalid type form: array not allowed");
+
         TypeMut field;
         CHECK_RESULT(ReadField(&field));
         CALLBACK(OnArrayType, i, field);
