@@ -1684,6 +1684,8 @@ void CWriter::Write(const ExprList& exprs) {
       case ExprType::ReturnCall:
       case ExprType::ReturnCallIndirect:
       case ExprType::StructNew:
+      case ExprType::StructGet:
+      case ExprType::StructSet:
       case ExprType::Throw:
       case ExprType::Try:
         UNIMPLEMENTED("...");
