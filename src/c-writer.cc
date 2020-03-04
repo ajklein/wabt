@@ -1686,6 +1686,10 @@ void CWriter::Write(const ExprList& exprs) {
       case ExprType::StructNew:
       case ExprType::StructGet:
       case ExprType::StructSet:
+      case ExprType::ArrayNew:
+      case ExprType::ArrayGet:
+      case ExprType::ArraySet:
+      case ExprType::ArrayLen:
       case ExprType::Throw:
       case ExprType::Try:
         UNIMPLEMENTED("...");

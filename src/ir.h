@@ -240,6 +240,10 @@ struct FuncDeclaration {
 };
 
 enum class ExprType {
+  ArrayGet,
+  ArrayLen,
+  ArrayNew,
+  ArraySet,
   AtomicLoad,
   AtomicRmw,
   AtomicRmwCmpxchg,
@@ -302,7 +306,7 @@ enum class ExprType {
   Unary,
   Unreachable,
 
-  First = AtomicLoad,
+  First = ArrayGet,
   Last = Unreachable
 };
 
@@ -426,6 +430,10 @@ typedef VarExpr<ExprType::TableSize> TableSizeExpr;
 typedef VarExpr<ExprType::TableFill> TableFillExpr;
 
 typedef VarExpr<ExprType::StructNew> StructNewExpr;
+typedef VarExpr<ExprType::ArrayNew> ArrayNewExpr;
+typedef VarExpr<ExprType::ArrayGet> ArrayGetExpr;
+typedef VarExpr<ExprType::ArraySet> ArraySetExpr;
+typedef VarExpr<ExprType::ArrayLen> ArrayLenExpr;
 
 template <ExprType TypeEnum>
 class StructFieldExpr : public ExprMixin<TypeEnum> {
