@@ -192,7 +192,7 @@ class WastParser {
   Result ParseExpr(ExprList*);
   Result ParseGlobalType(Global*);
   Result ParseField(Field*);
-  Result ParseFieldList(std::vector<Field>*);
+  Result ParseFieldList(std::vector<Field>*, BindingHash*);
 
   template <typename T>
   Result ParsePlainInstrVar(Location, std::unique_ptr<Expr>*);
