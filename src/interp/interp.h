@@ -72,6 +72,9 @@ enum class Mutability { Const, Var };
 enum class EventAttr { Exception };
 using SegmentMode = SegmentKind;
 enum class ElemKind { RefNull, RefFunc };
+enum class TypeEntryKind { Func, Struct };
+
+using Mutabilities = std::vector<Mutability>;
 
 enum class ObjectKind {
   Null,
@@ -92,6 +95,7 @@ const char* GetName(Mutability);
 const char* GetName(ValueType);
 const char* GetName(ExternKind);
 const char* GetName(ObjectKind);
+const char* GetName(TypeEntryKind);
 
 enum class InitExprKind {
   None,
@@ -163,6 +167,47 @@ Result Match(const Limits& expected,
              const Limits& actual,
              std::string* out_msg);
 
+struct TypeEntry {
+  explicit TypeEntry(TypeEntryKind);
+  virtual ~TypeEntry() {}
+
+  virtual std::unique_ptr<TypeEntry> Clone() const = 0;
+
+  TypeEntryKind kind;
+};
+
+struct FuncTypeEntry : TypeEntry {
+  static const TypeEntryKind skind = TypeEntryKind::Func;
+  static bool classof(const TypeEntry* entry);
+
+  explicit FuncTypeEntry(ValueTypes params, ValueTypes results);
+
+  std::unique_ptr<TypeEntry> Clone() const override;
+
+  friend Result Match(const FuncTypeEntry& expected,
+                      const FuncTypeEntry& actual,
+                      std::string* out_msg);
+
+  ValueTypes params;
+  ValueTypes results;
+};
+
+struct StructTypeEntry : TypeEntry {
+  static const TypeEntryKind skind = TypeEntryKind::Struct;
+  static bool classof(const TypeEntry* entry);
+
+  explicit StructTypeEntry(ValueTypes types, Mutabilities muts);
+
+  std::unique_ptr<TypeEntry> Clone() const override;
+
+  friend Result Match(const StructTypeEntry& expected,
+                      const StructTypeEntry& actual,
+                      std::string* out_msg);
+
+  ValueTypes types;
+  Mutabilities muts;
+};
+
 struct ExternType {
   explicit ExternType(ExternKind);
   virtual ~ExternType() {}
@@ -176,6 +221,7 @@ struct FuncType : ExternType {
   static bool classof(const ExternType* type);
 
   explicit FuncType(ValueTypes params, ValueTypes results);
+  explicit FuncType(const FuncTypeEntry& entry);
 
   std::unique_ptr<ExternType> Clone() const override;
 
@@ -183,8 +229,7 @@ struct FuncType : ExternType {
                       const FuncType& actual,
                       std::string* out_msg);
 
-  ValueTypes params;
-  ValueTypes results;
+  FuncTypeEntry entry;
 };
 
 struct TableType : ExternType {
@@ -273,6 +318,14 @@ struct ExportType {
 
 //// Structure ////
 
+struct TypeDesc {
+  explicit TypeDesc(std::unique_ptr<TypeEntry>);
+  TypeDesc(const TypeDesc&);
+  TypeDesc& operator=(const TypeDesc&);
+
+  std::unique_ptr<TypeEntry> type;
+};
+
 struct ImportDesc {
   ImportType type;
 };
@@ -346,7 +399,7 @@ struct ElemDesc {
 };
 
 struct ModuleDesc {
-  std::vector<FuncType> func_types;
+  std::vector<TypeDesc> types;
   std::vector<ImportDesc> imports;
   std::vector<FuncDesc> funcs;
   std::vector<TableDesc> tables;
