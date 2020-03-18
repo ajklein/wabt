@@ -84,7 +84,7 @@ struct Opcode {
   Address GetAlignment(Address alignment) const;
 
   static bool IsPrefixByte(uint8_t byte) {
-    return byte == kGcPrefix | byte == kMathPrefix || byte == kThreadsPrefix ||
+    return byte == kGcPrefix || byte == kMathPrefix || byte == kThreadsPrefix ||
            byte == kSimdPrefix;
   }
 
